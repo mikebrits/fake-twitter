@@ -8,21 +8,23 @@ import {
   Body,
   UsePipes,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { CreateUserDTO } from './users.dto';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
-import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
-import { Repository } from 'typeorm';
 import { UsersService } from './users.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
+  @UseGuards(AuthGuard('jwt'))
   @Get()
   findAll(@Req() req: Request): Promise<User[]> {
+    console.log(req.user);
     return this.userService.findAll();
   }
 
