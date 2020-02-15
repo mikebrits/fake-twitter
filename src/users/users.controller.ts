@@ -18,13 +18,12 @@ import { UsersService } from './users.service';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
+@UseGuards(AuthGuard('jwt'))
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
-  @UseGuards(AuthGuard('jwt'))
   @Get()
-  findAll(@Req() req: Request): Promise<User[]> {
-    console.log(req.user);
+  findAll(): Promise<User[]> {
     return this.userService.findAll();
   }
 
@@ -44,9 +43,9 @@ export class UsersController {
     return this.userService.create({ id, ...user });
   }
 
-  @Put(':id')
-  update(@Param() { id }, @Body() user: CreateUserDTO): Promise<User> {
-    return this.userService.create({ id, ...user });
+  @Put()
+  update(@Req() { user }, @Body() fields: CreateUserDTO): Promise<User> {
+    return this.userService.update({ id: user.id, ...fields });
   }
 
   @Delete(':id')

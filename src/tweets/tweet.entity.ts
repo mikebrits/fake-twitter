@@ -1,10 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 import { User } from "src/users/user.entity";
+import { BaseEntity } from "src/base/base.entity";
 
 @Entity()
-export class Tweet {
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
+export class Tweet extends BaseEntity {
 
     @Column()
     tweet: string;
