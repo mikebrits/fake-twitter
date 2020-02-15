@@ -16,6 +16,7 @@ import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
 import { AuthGuard } from '@nestjs/passport';
+import { Tweet } from 'src/tweets/tweet.entity';
 
 @Controller('users')
 @UseGuards(AuthGuard('jwt'))
@@ -39,17 +40,22 @@ export class UsersController {
 
   @Post()
   @UsePipes(ValidationPipe)
-  create(@Param() { id }, @Body() user: CreateUserDTO): Promise<User> {
-    return this.userService.create({ id, ...user });
+  create(@Body() user: CreateUserDTO): Promise<User> {
+    return this.userService.create(user);
   }
 
   @Put()
   update(@Req() { user }, @Body() fields: CreateUserDTO): Promise<User> {
-    return this.userService.update({ id: user.id, ...fields });
+    return this.userService.update(user.id, fields);
   }
 
   @Delete(':id')
   async remove(@Param() { id }): Promise<void> {
     await this.userService.remove(id);
+  }
+
+  @Get(":id/tweets")
+  tweets(@Param() {id}) : Promise<Tweet[]> {
+    return this.userService.findTweets(id);
   }
 }

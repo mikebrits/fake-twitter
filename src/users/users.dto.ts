@@ -14,7 +14,7 @@ export class CreateUserDTO {
   @IsOptional()
   @IsString()
   @Length(3, 50)
-  name: string;
+  name?: string;
 
   @IsString()
   @Length(6)
@@ -31,12 +31,12 @@ export class CreateUserDTO {
   @IsOptional()
   @IsNumber()
   @Min(13)
-  age: number;
+  age?: number;
 
   @IsBoolean({ message: 'User must be identified as over 18 or not' })
   over18: boolean;
 
   @IsOptional()
   @IsArray()
-  tweets: Tweet[] = [];
+  tweets?: Tweet[] = [];
 }

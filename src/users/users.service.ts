@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { hash } from 'bcrypt';
+import { CreateUserDTO } from './users.dto';
+import { Tweet } from 'src/tweets/tweet.entity';
 
 @Injectable()
 export class UsersService {
@@ -23,16 +25,23 @@ export class UsersService {
     return this.usersRepository.findOne({ email });
   }
 
-  async create(user: User): Promise<User> {
+  async create(user: CreateUserDTO): Promise<User> {
     const hashedPassword = await hash(user.password, 10);
     return this.usersRepository.save({ ...user, password: hashedPassword });
   }
 
-  update(user: User): Promise<User> {
-    return this.usersRepository.save(user);
+  update(id: string, fields: CreateUserDTO): Promise<User> {
+    return this.usersRepository.save({ id, ...fields });
   }
 
   async remove(id: string): Promise<void> {
     await this.usersRepository.delete(id);
+  }
+
+  async findTweets(id: string): Promise<Tweet[]> {
+    const user = await this.usersRepository.findOne(id, {
+      relations: ['tweets'],
+    });
+    return user.tweets;
   }
 }
