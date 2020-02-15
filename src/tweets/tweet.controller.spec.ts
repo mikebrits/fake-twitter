@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TweetController } from './tweet.controller';
+import { TweetController } from './tweets.controller';
 
 describe('Tweet Controller', () => {
   let controller: TweetController;
@@ -13,6 +13,6 @@ describe('Tweet Controller', () => {
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(controller).toBeDefined(); 
   });
 });
