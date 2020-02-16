@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, getConnection } from 'typeorm';
 import { User } from './user.entity';
 import { hash } from 'bcrypt';
 import { CreateUserDTO } from './users.dto';
@@ -18,7 +18,7 @@ export class UsersService {
   }
 
   findOne(id: string): Promise<User> {
-    return this.usersRepository.findOne(id);
+    return this.usersRepository.findOne(id, {relations: ["friends"]});
   }
 
   findByEmail(email: string): Promise<User> {
@@ -43,5 +43,19 @@ export class UsersService {
       relations: ['tweets'],
     });
     return user.tweets;
+  }
+
+  async addFriend(userId: string, friendId: string): Promise<User> {
+    const friend = await this.usersRepository.findOne(friendId);
+    if (!friend)
+      throw new NotFoundException(`User with id ${friendId} not found`);
+
+    await getConnection()
+      .createQueryBuilder()
+      .relation(User, 'friends')
+      .of(userId)
+      .add(friend);
+
+    return friend;
   }
 }

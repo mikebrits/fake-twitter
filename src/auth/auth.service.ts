@@ -19,7 +19,6 @@ export class AuthService {
     const passwordMatches = await compare(pass, user.password);
     if (passwordMatches) {
       const { password, ...result } = user;
-      console.log({result});
       return result;
     }
     return null;

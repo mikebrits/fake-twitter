@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable, ManyToOne } from "typeorm";
 import { Tweet } from "src/tweets/tweet.entity";
 import { BaseEntity } from "src/base/base.entity";
 
@@ -27,5 +27,10 @@ export class User extends BaseEntity {
     type => Tweet,
     tweet => tweet.user,
   )
-  tweets: Tweet[];
+  tweets?: Tweet[]; 
+
+  @ManyToMany(type => User)
+  @JoinTable()
+  friends?: User[];
+
 }
